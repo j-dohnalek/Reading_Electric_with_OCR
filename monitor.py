@@ -27,6 +27,8 @@
 #    3) read the file
 #    ssocr -d <number of digits> -t <threshold> out.jpg
 #
+#    if you wish to run it on in pattern like 1 time a day consider using crontabs
+#
 #############################################################################
 
 from commands import getoutput
@@ -95,9 +97,16 @@ def cutZero(var):
 #	Variables
 # ------------------
 
+# email settings
+smtpPass = "smtpPassword"
+smtpUser = "smtpUser"
+emailTo  = "myemail@goes.here"
+subject  = "Subject"
+yourName = "<your name here>"
+
 # Absolute path to the directory where the python files are stores
 # this will help to run it in the crontabs
-AppPath = '/home/shares/nas/homeApps/'
+AppPath = 'full path to the application directory'
 TempDir = AppPath + 'temporary/'
 # name of the first image
 imgIn   = TempDir + 'img.jpg'
@@ -128,13 +137,9 @@ size      = [560,200]
 # size of the output image
 resize    = 20 # <- percent of original
 threshold = 2
-# email settings
-smtpPass = "smtpPassword"
-smtpUser = "smtpUser"
-emailTo  = "myemail@goes.here"
-subject  = "Subject"
+
 # start of message
-message  = "Hello \n\n\n"
+message  = "Hello " + yourName + ",\n\n\n"
 
 # -----------------
 #	Application
