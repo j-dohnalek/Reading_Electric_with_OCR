@@ -38,3 +38,5 @@ sudo apt-get update
 sudo apt-get install imagemagick
 
 # 3) crontabs
+
+http://www.corntab.com/pages/crontab-gui
