@@ -78,8 +78,8 @@ def convertImage(imageName,outputImage,size,margin,resize,threshold):
     # picture processing
     getoutput(cmd)
 
-def convertImageToText(JpgImg):
-    return getoutput('/usr/local/bin/ssocr -d 5 '+ JpgImg );
+def convertImageToText(img,noDigits):
+    return getoutput('/usr/local/bin/ssocr -d '+ str(noDigits) + ' ' + img );
 
 def cleanDir(Path):
     file = listdir(Path)
@@ -104,6 +104,8 @@ emailTo  = "myemail@goes.here"
 subject  = "Subject"
 yourName = "<your name here>"
 
+# digits you are about to convert
+noDigits = 5
 # Absolute path to the directory where the python files are stores
 # this will help to run it in the crontabs
 AppPath = 'full path to the application directory'
@@ -152,7 +154,7 @@ try:
 	# Process the picture
 	takePicture(imgIn,resolution,cameraSettings)
 	convertImage(imgIn,imgOut,size,margin,resize,threshold)
-	reading = cutZero(convertImageToText(imgOut))
+	reading = cutZero(convertImageToText(imgOut,noDigits))
 	
 	# email message with the result (edit to needs)
 	message = message + "Your current credit is "+ reading +" pounds."
