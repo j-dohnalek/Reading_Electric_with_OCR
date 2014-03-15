@@ -30,20 +30,17 @@
 #############################################################################
 
 from commands import getoutput
-from os import remove
-from os import listdir
+from os import remove,listdir,makedirs
 from os.path import exists
-import time
+import time import sleep
 import picamera
-import sys
 import smtplib
 
 # ------------------
 #	Functions
 # ------------------
 
-
-def SendEmail(fromEmail,emailTo,subject,body,smtpPass,smtpUser):
+def sendEmail(fromEmail,emailTo,subject,body,smtpPass,smtpUser):
 
 	header = 'To: '+ emailTo + '\n' + 'From: ' + fromEmail + '\n'+ 'Subject: ' + subject
 	s = smtplib.SMTP('smtp.gmail.com',587)
@@ -65,7 +62,7 @@ def takePicture(imageName,resolution,settings):
         camera.shutter_speed = settings['ss']
         camera.AWB = settings['awb']
         # Give the camera some time to adjust to conditions
-        time.sleep(2)
+        sleep(2)
         camera.capture(imageName)
         camera.stop_preview()
 
@@ -143,16 +140,22 @@ message  = "Hello \n\n\n"
 #	Application
 # ------------------
 
-try:
+try:	
+	# create temporary directory to store the images
+	if not os.path.exists(tempDir):
+		os.makedirs(tempDir)
 	# Process the picture
 	takePicture(imgIn,resolution,cameraSettings)
 	convertImage(imgIn,imgOut,size,margin,resize,threshold)
 	reading = cutZero(convertImageToText(imgOut))
+	
+	# email message with the result (edit to needs)
 	message = message + "Your current credit is "+ reading +" pounds."
 except:
+	# error message 
 	message = "Monitoring system has come up to a error, please contact developer."
 
 message = message + "\n\nRegards\nYour Rasperry Pi"
-SendEmail(emailTo,subject,message,smtpPass,smtpPass)    
+sendEmail(emailTo,subject,message,smtpPass,smtpPass)    
 # clear the images
 cleanDir(TempDir)
