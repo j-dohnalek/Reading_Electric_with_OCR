@@ -16,11 +16,17 @@ You will need to install:
 # 1) ssocr
 
 sudo apt-get install libx11-dev
+
 sudo apt-get install libimlib2-dev
+
 wget http://www.unix-ag.uni-kl.de/~auerswal/ssocr/ssocr-2.14.1.tar.bz2
+
 bzip2 -d ssocr-2.14.1.tar.bz2
+
 tar xvf ssocr-2.14.1.tar
+
 cd ssocr-2.14.1/
+
 make
 
  
