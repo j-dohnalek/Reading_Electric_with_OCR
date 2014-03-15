@@ -112,12 +112,12 @@ imgOut  = TempDir + 'out.jpg'
 resolution = [800,600]
 # camera settings
 cameraSettings = {
-					'co'  : 80,       # contrast
-					'iso' : 800,      # ISO
-					'em'  : 'night',  # exposure mode
-					'mm'  : 'matrix', # metering mode
-					'ss'  : 150000,   # shutter speed
-					'awb' : 'auto'    # white balance
+		'co'  : 80,       # contrast
+		'iso' : 800,      # ISO
+		'em'  : 'night',  # exposure mode
+		'mm'  : 'matrix', # metering mode
+		'ss'  : 150000,   # shutter speed
+		'awb' : 'auto'    # white balance
 				}
 # Picture settings have to be ajdusted based on the position
 # how you will fit on the camera (i.e. to wall, or to the door) as
@@ -137,7 +137,7 @@ smtpUser = "smtpUser"
 emailTo  = "myemail@goes.here"
 subject  = "Subject"
 # start of message
-message = "Hello \n\n\n"
+message  = "Hello \n\n\n"
 
 # -----------------
 #	Application
@@ -153,6 +153,6 @@ except:
 	message = "Monitoring system has come up to a error, please contact developer."
 
 message = message + "\n\nRegards\nYour Rasperry Pi"
-SendEmail(emailTo,subject,message)    
+SendEmail(emailTo,subject,message,smtpPass,smtpPass)    
 # clear the images
 cleanDir(TempDir)
