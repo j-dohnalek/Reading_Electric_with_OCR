@@ -13,7 +13,7 @@ There are many possible way for you to use it like taking picture of multimeters
 You will need to install:
 =========================
 
-1) ssocr
+# 1) ssocr
 
 sudo apt-get install libx11-dev
 sudo apt-get install libimlib2-dev
@@ -23,11 +23,10 @@ tar xvf ssocr-2.14.1.tar
 cd ssocr-2.14.1/
 make
 
-# to install 
+ 
 sudo make install
 
-
-2) imageMagic 
+# 2) imageMagic 
 
 sudo apt-get update
 sudo apt-get install imagemagick
