@@ -36,3 +36,5 @@ sudo make install
 
 sudo apt-get update
 sudo apt-get install imagemagick
+
+# 3) crontabs
