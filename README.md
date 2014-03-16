@@ -27,9 +27,6 @@ tar xvf ssocr-2.14.1.tar
 
 cd ssocr-2.14.1/
 
-make
-
- 
 sudo make install
 
 # 2) imageMagic 
