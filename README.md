@@ -13,9 +13,11 @@ There are many possible way for you to use it like taking picture of multimeters
 You will need:
 ==============
 
-Gmail account to send the emails from the script. This is very easy to set up just search for tutorials sending email with python.
+1) Gmail Account
+you will to register with Gmail account to send the emails from the script. This is very easy to set up just search for tutorials sending email with python.
 
-# 1) ssocr
+2) ssocr
+SSOCR is a C library for optical character recognition which is desinged to read digits.You can install it from the commands bellow.
 
 sudo apt-get install libx11-dev
 
@@ -31,11 +33,11 @@ cd ssocr-2.14.1/
 
 sudo make install
 
-# 2) imageMagic 
+2) imageMagic 
 
 sudo apt-get update
 sudo apt-get install imagemagick
 
-# 3) crontabs
+3) crontabs
 
 http://www.corntab.com/pages/crontab-gui
