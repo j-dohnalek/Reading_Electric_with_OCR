@@ -13,11 +13,9 @@ There are many possible way for you to use it like taking picture of multimeters
 You will need:
 ==============
 
-1) Gmail Account
-you will to register with Gmail account to send the emails from the script. This is very easy to set up just search for tutorials sending email with python.
+1) Gmail Account. I am using for this script gmail smtp service over the port 587. If you wish to send emails and you do not posses gmail account you will have to register for one. Othervise you will have to find different service if you fo not wish to use the gmail smtp. 
 
-2) ssocr
-SSOCR is a C library for optical character recognition which is desinged to read digits.You can install it from the commands bellow.
+2) SSOCR is a C library for optical character recognition which is desinged to read digits.You can install it from the commands bellow.
 
 sudo apt-get install libx11-dev
 
@@ -33,7 +31,7 @@ cd ssocr-2.14.1/
 
 sudo make install
 
-2) imageMagic 
+2) imageMagic is library to convert images. 
 
 sudo apt-get update
 sudo apt-get install imagemagick
