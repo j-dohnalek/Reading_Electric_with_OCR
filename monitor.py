@@ -34,7 +34,7 @@
 from commands import getoutput
 from os import remove,listdir,makedirs
 from os.path import exists
-import time import sleep
+from time import sleep
 import picamera
 import smtplib
 
