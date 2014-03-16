@@ -6,12 +6,14 @@ Smart home automation with raspberry pi
 Description:
 ============
 
-I have attemp to build smart home using the Raspberry pi. First part of my project is to read my electricity meter. I have got a electricity meter which is topped up with key fob and have a display of one line of digits informing me about the remaing credit. I have build a system using python 2.7 to take the picture of the display and I have used other software tools to convert the image to text.
+I have attemp to build smart home using the Raspberry pi. First part of my project is to read my electricity meter remaining credit. I have got a electricity meter which is topped up with key fob and have a display of one line of digits informing me about the remaing credit. I have build a system using python 2.7 to take the picture of the display and I have used other software tools to convert the image to text.
 
 There are many possible way for you to use it like taking picture of multimeters like some did to monitor home usage.
 
-You will need to install:
-=========================
+You will need:
+==============
+
+Gmail account to send the emails from the script. This is very easy to set up just search for tutorials sending email with python.
 
 # 1) ssocr
 
