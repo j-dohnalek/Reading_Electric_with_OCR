@@ -162,7 +162,7 @@ def convert_image(imagename, output_image, size=None, margin=None, resize=None, 
                    )
 
     # picture processing
-    getoutput(cmd)
+    getoutput(cmd)  # what is this actually doing?
 
 
 def convert_image_to_text(img, number_of_digits):
