@@ -24,145 +24,155 @@
 #    raspistill -ISO 800 -ss 150000 -mm matrix -awb auto -ex night -co 60 -w 800 -h 600 -o image.jpg
 #    2) convert the image for the ssocr 
 #    convert image.jpg -crop 560x200+290+140 -threshold 3% -resize 20% out.jpg
-#    3) read the file
+#    3) read the _file
 #    ssocr -d <number of digits> -t <threshold> out.jpg
 #
 #    if you wish to run it on in pattern like 1 time a day consider using crontabs
 #
 #############################################################################
 
+# IMPORTS ###################################################################
+
+
+# PARTICULAR IMPORTS ########################################################
+
 from commands import getoutput
-from os import remove,listdir,makedirs
+from os import remove, listdir
 from os.path import exists
-from time import sleep
-import picamera
-import smtplib
 
-# ------------------
-#	Functions
-# ------------------
+# THIRD-PARTY IMPORTS #######################################################
 
-def sendEmail(fromEmail,emailTo,subject,body,smtpPass,smtpUser):
+import jemail
+import raspicamera
 
-	header = 'To: '+ emailTo + '\n' + 'From: ' + fromEmail + '\n'+ 'Subject: ' + subject
-	s = smtplib.SMTP('smtp.gmail.com',587)
-	s.ehlo()
-	s.starttls()
-	s.ehlo()
-	s.login(smtpUser, smtpPass)
-	s.sendmail(fromAdd, emailTo, header + '\n\n' + body)
-	s.quit()
+# CONSTANTS #################################################################
 
-def takePicture(imageName,resolution,settings):
-    with picamera.PiCamera() as camera:
-        camera.resolution = (resolution[0], resolution[1])
-        camera.start_preview()
-        camera.contrast = settings['co']
-        camera.ISO = settings['iso']
-        camera.exposure_mode = settings['em']
-        camera.meter_mode = settings['mm']
-        camera.shutter_speed = settings['ss']
-        camera.AWB = settings['awb']
-        # Give the camera some time to adjust to conditions
-        sleep(2)
-        camera.capture(imageName)
-        camera.stop_preview()
+SMTP_USERNAME = "smtp_username"
+SMTP_PASSWORD = "smtp_password"
+EMAIL_TO = "myemail@goes.here"
+SUBJECT = "subject"
+RECIPIENT_NAME = "your name"
 
-def convertImage(imageName,outputImage,size,margin,resize,threshold):
-    # picture setting commands
-    cmd = '/usr/bin/convert '+ imageName
-    cmd = cmd + ' -crop '+ str(size[0]) +'x'+ str(size[1])
-    cmd = cmd + '+' + str(margin[0]) + '+' + str(margin[1])
-    cmd = cmd + ' -resize '+ str(resize) 
-    cmd = cmd +'% -threshold ' + str(threshold) + '% ' + outputImage
+# digits you are about to convert
+NUMBER_OF_DIGITS = 5
+
+# Absolute _path to the directory where the python _files are stores
+# this will help to run it in the crontabs
+APP_PATH = 'full _path to the application directory'
+
+TEMP_DIR = APP_PATH + 'temporary/'
+
+# name of the first image
+IMAGE_IN = TEMP_DIR + 'img.jpg'
+
+# name of the image after the convertion
+IMAGE_OUT = TEMP_DIR + 'out.jpg'
+
+
+# VARIABLES #################################################################
+
+# CLASSES ###################################################################
+
+# FUNCTIONS #################################################################
+
+
+def begin():
+
+    message = "Hello " + RECIPIENT_NAME + ",\n\n\n"
+
+    try:
+        # create temporary directory to store the images
+        if not os.path.exists(TEMP_DIR):
+            os.makedirs(TEMP_DIR)
+        # Process the picture
+        raspicamera.take_picture(IMAGE_IN)
+        convert_image(IMAGE_IN, IMAGE_OUT)
+        reading = cut_zero(convert_image_to_text(IMAGE_OUT, NUMBER_OF_DIGITS))
+
+        # email message with the result (edit to needs)
+        message = message + "Your current credit is " + reading + " pounds."
+    # bad practice not to specify what type of error you want to handle like this!
+    except:
+        # error message
+        message = "Monitoring system has come up to a error, please contact developer."
+
+    message += "\n\nRegards\nYour Rasperry Pi"
+    jemail.send_email(SUBJECT, message, EMAIL_TO, SMTP_USERNAME, SMTP_PASSWORD)
+    # clear the images
+    clean_dir(TEMP_DIR)
+
+
+def convert_image(imagename, output_image, size=None, margin=None, resize=None, threshold=None):
+
+    # size[0] = width of the new image being cut out
+    # size[1] = height of the new image being cut out
+    if size is None:
+        _size = [560, 200]
+    else:
+        _size = size
+
+    # margin[0] = left margin (pixels)
+    # margin[1] = top margin (pixels)
+    if margin is None:
+        _margin = margin
+    else:
+        _margin = [290, 140]
+
+    # size of the output image
+    if resize is None:
+        _resize = 20  # <- percent of original
+    else:
+        _resize = resize
+
+    if threshold is None:
+        _threshold = 2
+    else:
+        _threshold = threshold
+
+# # picture setting commands
+# cmd = '/usr/bin/convert ' + imagename
+# cmd += ' -crop ' + str(_size[0]) + 'x' + str(_size[1])
+# cmd += '+' + str(_margin[0]) + '+' + str(_margin[1])
+# cmd += ' -resize ' + str(_resize)
+# cmd += '% -threshold ' + str(_threshold) + '% ' + output_image
+
+    cmd = """/usr/bin/convert {0} -crop {1}x{2} + {3}x{4} -resize {5}% -threshold {6}% {7}
+        """.format(imagename,  # 0
+                   str(_size[0]),  # 1
+                   str(_size[1]),  # 2
+                   str(_margin[0]),  # 3
+                   str(_margin[1]),  # 4
+                   str(_resize),  # 5
+                   str(_threshold),  # 6
+                   output_image  # 7
+                   )
+
     # picture processing
     getoutput(cmd)
 
-def convertImageToText(img,numOfDigits):
-    return getoutput('/usr/local/bin/ssocr -d '+ str(numOfDigits) + ' ' + img );
 
-def cleanDir(Path):
-    file = listdir(Path)
-    for i in range(0,len(file)):
-        if(exists(Path + file[i])):
-            remove(Path + file[i])
+def convert_image_to_text(img, number_of_digits):
+    return getoutput('/usr/local/bin/ssocr -d ' + str(number_of_digits) + ' ' + img)
 
-def cutZero(var):
+
+def clean_dir(_path):
+    _file = listdir(_path)
+    for i in range(0, len(_file)):
+        if exists(_path + _file[i]):
+            remove(_path + _file[i])
+
+
+def cut_zero(var):
     if var[:1] == '0':
         return var[1:]
     else:
         return var
-        
-# ------------------
-#	Variables
-# ------------------
 
-# email settings
-smtpPass = "smtpPassword"
-smtpUser = "smtpUser"
-emailTo  = "myemail@goes.here"
-subject  = "Subject"
-yourName = "<your name here>"
 
-# digits you are about to convert
-numOfDigits = 5
-# Absolute path to the directory where the python files are stores
-# this will help to run it in the crontabs
-AppPath = 'full path to the application directory'
-TempDir = AppPath + 'temporary/'
-# name of the first image
-imgIn   = TempDir + 'img.jpg'
-# name of the image after the convertion
-imgOut  = TempDir + 'out.jpg'
-# Resolution of the image from the camera
-# better to keep is lower this will decrease
-# the processing time
-resolution = [800,600]
-# camera settings
-cameraSettings = {
-		'co'  : 80,       # contrast
-		'iso' : 800,      # ISO
-		'em'  : 'night',  # exposure mode
-		'mm'  : 'matrix', # metering mode
-		'ss'  : 150000,   # shutter speed
-		'awb' : 'auto'    # white balance
-				}
-# Picture settings have to be ajdusted based on the position
-# how you will fit on the camera (i.e. to wall, or to the door) as
-# the idea is to cut only the area where all the digits are.
-# margin[0] = left margin (pixels)
-# margin[1] = top margin (pixels)
-margin    = [290,140]
-# size[0] = width of the new image being cut out
-# size[1] = height of the new image being cut out
-size      = [560,200]
-# size of the output image
-resize    = 20 # <- percent of original
-threshold = 2
+def main():
+    begin()
 
-# start of message
-message  = "Hello " + yourName + ",\n\n\n"
+###############################################
 
-# -----------------
-#	Application
-# ------------------
-
-try:	
-	# create temporary directory to store the images
-	if not os.path.exists(tempDir):
-		os.makedirs(tempDir)
-	# Process the picture
-	takePicture(imgIn,resolution,cameraSettings)
-	convertImage(imgIn,imgOut,size,margin,resize,threshold)
-	reading = cutZero(convertImageToText(imgOut,numOfDigits))
-	
-	# email message with the result (edit to needs)
-	message = message + "Your current credit is "+ reading +" pounds."
-except:
-	# error message 
-	message = "Monitoring system has come up to a error, please contact developer."
-
-message = message + "\n\nRegards\nYour Rasperry Pi"
-sendEmail(emailTo,subject,message,smtpPass,smtpPass)    
-# clear the images
-cleanDir(TempDir)
+if __name__ == "__main__":
+    main()
