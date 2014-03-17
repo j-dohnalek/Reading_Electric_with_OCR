@@ -18,7 +18,7 @@ def send_email(subject, body, recipients, smtp_username, smtp_password, attachme
     :param subject:  subject of the email
     :param body:  body/content of the email
     :param recipients:  recipients of the email as a comma separated string
-    :param attachment: (optional) point this to a file object
+    :param attachment: (optional) point this to a file object to be attached to the email
     """
 
     #smtp_username = "jiri@gmail.com"

@@ -24,6 +24,22 @@ def take_picture(imagename, resolution=None, camera_settings=None):
                                 }
     """
 
+    # a type assertion here would be good as you validate that format of the list that is submitted for resolution.
+    # lines that begin with ### are lines of code.
+
+    # So first we assert that resolution is in fact a list object.
+    ### assert isinstance(resolution, list):
+        # if it is a list, we need to know it's length, i.e. how many items are in the list as we only want 2 items!
+        ### if len(resolution) = 2:
+            # we now need to know if each entry in the list is a number
+            ### for entry in resolution:
+                ### assert isinstance(entry, int):
+                    # Now that we are sure that the resolution submitted is correct, we can assign it.
+                    ### _resolution = resolution
+        ### else:
+                ### print "Something went wrong."
+
+
     if resolution is None:
         resolution = [800, 600]
 
