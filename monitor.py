@@ -150,7 +150,7 @@ def convert_image(imagename, output_image, size=None, margin=None, resize=None, 
 # cmd += ' -resize ' + str(_resize)
 # cmd += '% -threshold ' + str(_threshold) + '% ' + output_image
 
-    cmd = """/usr/bin/convert {0} -crop {1}x{2} + {3}x{4} -resize {5}% -threshold {6}% {7}
+    cmd = """/usr/bin/convert {0} -crop {1}x{2}+{3}x{4} -resize {5}% -threshold {6}% {7}
         """.format(imagename,  # 0
                    str(_size[0]),  # 1
                    str(_size[1]),  # 2
