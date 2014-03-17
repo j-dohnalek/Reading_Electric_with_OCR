@@ -37,15 +37,14 @@ def take_picture(imagename, resolution=None, camera_settings=None):
                     # Now that we are sure that the resolution submitted is correct, we can assign it.
                     ### _resolution = resolution
         ### else:
+                ### resolution = [800, 600]
                 ### print "Something went wrong."
-
 
     if resolution is None:
         resolution = [800, 600]
 
-    # there is a more resilient way of specifying this
+    # there is a more resilient way of specifying this to make this more re-usable.
     if camera_settings is None:
-        # camera settings
         _camera_settings = {'co': 80,  # contrast
                             'iso': 800,  # ISO
                             'em': 'night',  # exposure mode
