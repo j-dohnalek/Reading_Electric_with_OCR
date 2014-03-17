@@ -15,11 +15,11 @@ def take_picture(imagename, resolution=None, camera_settings=None):
     if camera_settings is None:
         # camera settings
         _camera_settings = {'co': 80,  # contrast
-                           'iso': 800,  # ISO
-                           'em': 'night',  # exposure mode
-                           'mm': 'matrix',  # metering mode
-                           'ss': 150000,  # shutter speed
-                           'awb': 'auto'}  # white balance
+                            'iso': 800,  # ISO
+                            'em': 'night',  # exposure mode
+                            'mm': 'matrix',  # metering mode
+                            'ss': 150000,  # shutter speed
+                            'awb': 'auto'}  # white balance
     else:
         _camera_settings = camera_settings
 
