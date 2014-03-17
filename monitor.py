@@ -172,8 +172,8 @@ def convert_image_to_text(img, number_of_digits):
     :param number_of_digits:  number of digits you want to read
     :return:
     """
-    return getoutput('/usr/local/bin/ssocr -d ' + str(number_of_digits) + ' ' + img)
-
+    returned_image = getoutput('/usr/local/bin/ssocr -d ' + str(number_of_digits) + ' ' + img)
+    return returned_image
 
 def clean_dir(_path):
     """
