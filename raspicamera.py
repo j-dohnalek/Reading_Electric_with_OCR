@@ -9,9 +9,25 @@ import sleep
 
 
 def take_picture(imagename, resolution=None, camera_settings=None):
+    """
+
+    :param imagename:  name of the image that you want to create
+    :param resolution:  image resolution to save as.  Default is 800x600
+    :param camera_settings:  the settings for the camera.  Defaults are:
+        camera_settings dict:   {
+                                'co': 80,        # contrast
+                                'iso': 800,      # ISO
+                                'em': 'night',   # exposure mode
+                                'mm': 'matrix',  # metering mode
+                                'ss': 150000,    # shutter speed
+                                'awb': 'auto'    # white balance
+                                }
+    """
+
     if resolution is None:
         resolution = [800, 600]
 
+    # there is a more resilient way of specifying this
     if camera_settings is None:
         # camera settings
         _camera_settings = {'co': 80,  # contrast

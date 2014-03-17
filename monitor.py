@@ -78,6 +78,10 @@ IMAGE_OUT = TEMP_DIR + 'out.jpg'
 
 def begin():
 
+    """
+    Entry point for code.  Takes no arguments.
+
+    """
     message = "Hello " + RECIPIENT_NAME + ",\n\n\n"
 
     try:
@@ -103,6 +107,16 @@ def begin():
 
 
 def convert_image(imagename, output_image, size=None, margin=None, resize=None, threshold=None):
+    """
+
+    :param imagename:  name of the image you want to read
+    :param output_image:  name of the image you want to create
+    :param size:  trimmed size of the image
+    :param margin:  any margins that you want to add
+    :param resize:  resized size as a percentage
+    :param threshold:  some threshold or other!
+    """
+
 
     # size[0] = width of the new image being cut out
     # size[1] = height of the new image being cut out
@@ -152,10 +166,20 @@ def convert_image(imagename, output_image, size=None, margin=None, resize=None, 
 
 
 def convert_image_to_text(img, number_of_digits):
+    """
+
+    :param img:  image to convert
+    :param number_of_digits:  number of digits you want to read
+    :return:
+    """
     return getoutput('/usr/local/bin/ssocr -d ' + str(number_of_digits) + ' ' + img)
 
 
 def clean_dir(_path):
+    """
+
+    :param _path:  path to clean
+    """
     _file = listdir(_path)
     for i in range(0, len(_file)):
         if exists(_path + _file[i]):
@@ -163,6 +187,11 @@ def clean_dir(_path):
 
 
 def cut_zero(var):
+    """
+
+    :param var:  no idea what this is doing really!
+    :return:
+    """
     if var[:1] == '0':
         return var[1:]
     else:
@@ -170,6 +199,10 @@ def cut_zero(var):
 
 
 def main():
+    """
+
+
+    """
     begin()
 
 ###############################################
