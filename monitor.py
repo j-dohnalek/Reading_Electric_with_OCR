@@ -94,7 +94,7 @@ def begin():
         reading = cut_zero(convert_image_to_text(IMAGE_OUT, NUMBER_OF_DIGITS))
 
         # email message with the result (edit to needs)
-        message = message + "Your current credit is " + reading + " pounds."
+        message += "Your current credit is " + reading + " pounds."
     # bad practice not to specify what type of error you want to handle like this!
     except:
         # error message
