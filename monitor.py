@@ -40,10 +40,15 @@ from commands import getoutput
 from os import remove, listdir
 from os.path import exists
 
+from execute import execute
+
 # THIRD-PARTY IMPORTS #######################################################
 
 import jemail
 import raspicamera
+
+
+
 
 # CONSTANTS #################################################################
 
@@ -117,7 +122,6 @@ def convert_image(imagename, output_image, size=None, margin=None, resize=None, 
     :param threshold:  some threshold or other!
     """
 
-
     # size[0] = width of the new image being cut out
     # size[1] = height of the new image being cut out
     if size is None:
@@ -161,8 +165,13 @@ def convert_image(imagename, output_image, size=None, margin=None, resize=None, 
                    output_image  # 7
                    )
 
+    cmd_list = cmd.split(' ')
+
+    print cmd_list
+
     # picture processing
-    getoutput(cmd)  # what is this actually doing?
+    output = execute(cmd_list)  # what is this actually doing?
+    # check if the returned value is good enough.
 
 
 def convert_image_to_text(img, number_of_digits):
