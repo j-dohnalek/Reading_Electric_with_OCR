@@ -18,6 +18,7 @@ def execute(command, shell=False):
     """
 
     if sys.platform.startswith('win32'):
+        # for Windows systems (not Cygwyn)
 
         return_code = subprocess.call(command, shell=False)
         # Standard Windows error return codes.
@@ -38,7 +39,9 @@ def execute(command, shell=False):
         return return_code
 
     elif sys.platform.startswith('darwin'):
+        # for OS X
         pass
 
     elif sys.platform.startswith('linux2'):
+        # for linux systems
         pass
