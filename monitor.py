@@ -132,9 +132,9 @@ def convert_image(imagename, output_image, size=None, margin=None, resize=None, 
     # margin[0] = left margin (pixels)
     # margin[1] = top margin (pixels)
     if margin is None:
-        _margin = margin
-    else:
         _margin = [290, 140]
+    else:
+        _margin = margin
 
     # size of the output image
     if resize is None:
