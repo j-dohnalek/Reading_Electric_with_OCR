@@ -37,7 +37,7 @@
 # PARTICULAR IMPORTS ########################################################
 
 from commands import getoutput
-from os import remove, listdir
+from os import remove, listdir, makedirs
 from os.path import exists
 
 from execute import execute
@@ -91,8 +91,8 @@ def begin():
 
     try:
         # create temporary directory to store the images
-        if not os.path.exists(TEMP_DIR):
-            os.makedirs(TEMP_DIR)
+        if not exists(TEMP_DIR):
+            makedirs(TEMP_DIR)
         # Process the picture
         raspicamera.take_picture(IMAGE_IN)
         convert_image(IMAGE_IN, IMAGE_OUT)
