@@ -55,11 +55,11 @@ import debug
 # CONSTANTS #################################################################
 TIMEZONE = 'Europe/London'
 
-SMTP_USERNAME = "application.email001@gmail.com"
-SMTP_PASSWORD = "karolinakinga"
-EMAIL_TO = "thinkabout3e@googlemail.com"
-SUBJECT = "Application Reading"
-RECIPIENT_NAME = "Jiri"
+SMTP_USERNAME = ""
+SMTP_PASSWORD = ""
+EMAIL_TO = ""
+SUBJECT = ""
+RECIPIENT_NAME = ""
 
 # digits you are about to convert
 NUMBER_OF_DIGITS = 5
