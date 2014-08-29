@@ -98,6 +98,8 @@ def begin():
     start = time.time()  # measure execution time of the script
 
     credit = 0
+    
+    # try to run 10 times 
     for i in range(10):
 		# Process the picture
 		raspicamera.take_picture(IMAGE_IN)
@@ -108,9 +110,8 @@ def begin():
 			break
 		else:
 			clean_dir(TEMP_DIR)
-    
-		print("Number of tries {}".format(i))
 	
+	# send the email
     message = email_msg(RECIPIENT_NAME, credit)
     jemail.send_email(SUBJECT, message, EMAIL_TO, SMTP_USERNAME, SMTP_PASSWORD)
     clean_dir(TEMP_DIR)  # clear the images
