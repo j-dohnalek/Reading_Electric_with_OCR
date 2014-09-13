@@ -3,6 +3,7 @@
 # ############################################################################
 #    monitor.py - Python 2.7
 #    Copyright (C) 2014 Jiri Dohnalek
+#    Last update: 13.9.2014
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -29,98 +30,68 @@
 #
 #    if you wish to run it on in pattern like 1 time a day consider using crontabs
 #
-# ############################################################################
+# ###########################################################################
 
-# IMPORTS ###################################################################
-
-
-# PARTICULAR IMPORTS ########################################################
+#  IMPORTS ##################################################################
 
 import os
 import os.path
 import subprocess
-import csv
 import time
 import datetime
+import sys
 
 from pytz import timezone
-from collections import deque
 
 # THIRD-PARTY IMPORTS #######################################################
 
-import jemail
-import raspicamera
-import debug
+from lib import ini
+from lib import jemail
+from lib import raspicamera
+from lib import debug
 
 # CONSTANTS #################################################################
-TIMEZONE = 'Europe/London'
-
-SMTP_USERNAME = ""
-SMTP_PASSWORD = ""
-EMAIL_TO = ""
-SUBJECT = ""
-RECIPIENT_NAME = ""
-
-# digits you are about to convert
-NUMBER_OF_DIGITS = 5
 
 # Absolute _path to the directory where the python _files are stores
 # this will help to run it in the crontabs
-APP_PATH = '/home/shares/nas/testApp/'
-
-TEMP_DIR = APP_PATH + 'temporary/'
-
-# name of the first image
-IMAGE_IN = TEMP_DIR + 'img.jpg'
-
-# name of the image after the convertion
-IMAGE_OUT = TEMP_DIR + 'out.jpg'
-
-# history folder is where python saves all the previous readings
-HISTORY = APP_PATH + 'cache/history/'
-HISTORY_FILE = HISTORY + 'last_reading.csv'
-
-# attachment error log
-DEBUG_LOG = 'cache/debug/error_log.csv'
+PATH = os.getcwd()
 
 # FUNCTIONS #################################################################
 
 
 def begin():
 
-    """
-    Entry point for code.  Takes no arguments.
-
-    """
-    if not os.path.exists(TEMP_DIR):
-        os.makedirs(TEMP_DIR)
+    """  Entry point for code.  Takes no arguments.  """
 
     start = time.time()  # measure execution time of the script
+    ini.setup(PATH)
+    latest_meter_reading()
+    ini.clean_directory(PATH + ini.get_conf_setting('general', 'temp'))
 
-    credit = 0
-    
-    # try to run 10 times 
-    for i in range(10):
-		# Process the picture
-		raspicamera.take_picture(IMAGE_IN)
-		convert_image(IMAGE_IN, IMAGE_OUT)
-		credit = convert_image_to_text(IMAGE_OUT, NUMBER_OF_DIGITS)
-		
-		if isinstance(credit, float):
-			break
-		else:
-			clean_dir(TEMP_DIR)
-	
-	# send the email
-    message = email_msg(RECIPIENT_NAME, credit)
-    jemail.send_email(SUBJECT, message, EMAIL_TO, SMTP_USERNAME, SMTP_PASSWORD)
-    clean_dir(TEMP_DIR)  # clear the images
     print "Script execution time %5.2f seconds." % (time.time() - start)
+
+
+def count_consumtion(credit):
+    """
+    :param credit: current credit
+    """
+
+    last = ini.read_file(PATH + ini.get_conf_setting('files', 'last_reading'))
+    if len(last) is 0:
+        return False
+    else:
+        last = float(last)
+
+    current = float(credit)
+
+    if current > last:
+        return False
+    else:
+        return last - current
 
 
 def convert_image(image_name, output_image, size=None, margin=None, resize=None, threshold=None):
     """
-
     :param image_name:  name of the image you want to read
     :param output_image:  name of the image you want to create
     :param size:  trimmed size of the image
@@ -176,18 +147,7 @@ def convert_image_to_text(image, number_of_digits):
     """
 
     cmd = "/usr/local/bin/ssocr -d {0} -t 10 {1}".format(str(number_of_digits), image)
-
-    #returned_image = commands.getoutput(cmd)
-    # what is this calling?  is this meant to be another call to subprocess.call?
-
-    # the commands.getoutput have just outputed the value from the the
-    # command which was than returned for future use.
-
-    cmd_list = cmd.split()  # remember, if there is a space in your command,
-                            # it has to be a list object split at the spaces.
-
-    # found check_output here: http://docs.python.org/2/library/subprocess.html
-    # subprocess.call will only return the returncode, not the output data from the command.
+    cmd_list = cmd.split()
 
     try:
         returned_text = subprocess.check_output(cmd_list)
@@ -200,39 +160,81 @@ def convert_image_to_text(image, number_of_digits):
         debug.write_csv_error_log('monitor.py', 'convert_image_to_text()', err)
 
 
-def get_last_row(csv_filename):
-    """
+def latest_meter_reading():
 
-    :param csv_filename: file name to read the last recorded meter reading
-    :return: string of the last reading
-    """
-    with open(csv_filename, 'rb') as f:
-        return deque(csv.reader(f), 1)[0]
+    credit = 0
+
+    image_in = PATH + ini.get_conf_setting('files', 'raw_image')
+    image_out = PATH + ini.get_conf_setting('files', 'ready_image')
+
+    for i in range(ini.get_conf_setting('variable', 'max_attempts', 'int')):
+
+        # Process the picture
+        raspicamera.take_picture(image_in)
+        convert_image(image_in, image_out)
+        credit = convert_image_to_text(image_out, ini.get_conf_setting('variable', 'digits', 'int'))
+
+        if isinstance(credit, float):
+
+            # send email to user and update last reading file
+            send_html_email(credit)
+            ini.write_to_file(PATH + ini.get_conf_setting('files', 'last_reading'), str(credit))
+            return
+
+        else:
+
+            ini.clean_directory(PATH + ini.get_conf_setting('general', 'temp'))
+
+    # kill the application after the max attempts is crossed
+    return sys.exit("Application have failed to get the meter reading.")
 
 
-def email_msg(recipien, credit):
+def send_html_email(credit):
 
-    time_zone = timezone(TIMEZONE)  # set current time zone
-    current_time_zone = datetime.datetime.now(time_zone)  # set current time zone
-    message = "Hello " + str(recipien) + ", <br><br>"
-    message += """This is a message from you automated system to
-                 monitor reamining credit on your electric meter."""
-    message += """<h3>Current balance: &pound;{0} <br />""".format(str(credit))
-    message += """Reading Date: {0}""".format(current_time_zone.strftime('%H:%M:%S %d.%m.%Y'))
-    message += "</h3><br>Regards<br>Your Rasperry Pi Automated System"
+    # set current time zone
+    time_zone = timezone(ini.get_conf_setting('general', 'timezone'))
+    current_time_zone = datetime.datetime.now(time_zone)
 
-    return message
+    # email settings
+    smtp_user = ini.get_email_setting('email', 'smtp_username')
+    smtp_pass = ini.get_email_setting('email', 'smtp_password')
+    subject = ini.get_email_setting('email', 'subject')
 
+    # user settings
+    users = ini.users_list()
 
-def clean_dir(_path):
-    """
+    # count consumption
+    consumption = ''
+    if count_consumtion(credit) is not False:
+        consumption = """Consumption from last reading: &pound;%.2f <br>""" % count_consumtion(credit)
 
-    :param _path:  path to clean
-    """
-    _file = os.listdir(_path)
-    for i in range(0, len(_file)):
-        if os.path.exists(_path + _file[i]):
-            os.remove(_path + _file[i])
+    for user in users:
+
+        if user[2] == 'yes':
+
+            # message build
+            msg = """
+                    Hello {0},
+                    <br><br>
+                    This is a message from you automated system to monitor reamining credit on your electric meter. The
+                    current version of the system is 0.14.9
+                    <h3>
+                        Current balance: &pound;{1} <br />
+                        {2}
+                        Reading Date: {3}
+                    </h3>
+
+                    <br>Regards
+                    <br>Your Rasperry Pi Automated System"
+            """.format(user[1],  # 0
+                       str("%.2f" % credit),  # 1
+                       consumption,  # 2
+                       str(current_time_zone.strftime('%H:%M:%S %d.%m.%Y'))  # 3
+                       )
+
+            # sends the email
+            print("Sending email to {0}, {1}".format(user[1], user[0]))
+            jemail.send_email(subject, msg, user[0], smtp_user, smtp_pass)
 
 
 def main():
