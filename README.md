@@ -8,7 +8,7 @@ There are many possible way for you to use it like taking picture of multimeters
 You will need:
 ==============
 
-1) https://pushover.net/ offers application 7500 messages montly for free, app to access it on android https://play.google.com/store/apps/details?id=net.superblock.pushover&ts=1413996231
+1) https://pushover.net/ offers application 7500 messages montly for free, app to access it on android https://play.google.com/store/apps/details?id=net.superblock.pushover&ts=1413996231. For more information how to set up the Push over on Raspberry pi can be found on http://www.michaelhleonard.com/send-push-messages-from-beaglebone-black-or-raspberry-pi-to-iphone-or-android/ 
 
 2) SSOCR is a C library for optical character recognition which is desinged to read digits.You can install it from the commands bellow.
 
