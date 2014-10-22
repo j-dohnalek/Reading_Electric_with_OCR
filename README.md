@@ -8,7 +8,7 @@ There are many possible way for you to use it like taking picture of multimeters
 You will need:
 ==============
 
-1) Gmail Account. I am using for this script gmail smtp service over the port 587. If you wish to send emails and you do not posses gmail account you will have to register for one. Othervise you will have to find different service if you fo not wish to use the gmail smtp. 
+1) https://pushover.net/ offers application 7500 messages montly for free, app to access it on android https://play.google.com/store/apps/details?id=net.superblock.pushover&ts=1413996231
 
 2) SSOCR is a C library for optical character recognition which is desinged to read digits.You can install it from the commands bellow.
 
