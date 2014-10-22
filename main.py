@@ -105,7 +105,13 @@ def last_reading_write(data):
 
 
 def take_picture(imagename):
-        
+    """
+    Adjust the script command to your needs!
+    
+    Why I have not used the raspberry pi python camera module?
+    I have got issue with the result images, the images came out different using the subprocess and using the camera module.
+    Feel free to replace the code below to utilise python camera module. 
+    """
     cmd = "/usr/bin/raspistill -ISO 1600 -ss 300000 -mm matrix -awb auto -ex night -co 80 -w 800 -h 600 -o %s" % imagename
     cmd_list = cmd.split()
     subprocess.check_output(cmd_list)    
