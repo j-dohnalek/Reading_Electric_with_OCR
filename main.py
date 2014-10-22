@@ -110,7 +110,16 @@ def take_picture(imagename):
     
     Why I have not used the raspberry pi python camera module?
     I have got issue with the result images, the images came out different using the subprocess and using the camera module.
-    Feel free to replace the code below to utilise python camera module. 
+    Feel free to replace the code below to utilise python camera module.
+    
+    -ISO Camera ISO settings
+    -ss  Shutter Speed
+    -awb White Balance
+    -ex  Exposure Settins
+    -co  Contrast Settings
+    -w   Width of the image
+    -h   Height of the image
+    -o   output image name
     """
     cmd = "/usr/bin/raspistill -ISO 1600 -ss 300000 -mm matrix -awb auto -ex night -co 80 -w 800 -h 600 -o %s" % imagename
     cmd_list = cmd.split()
