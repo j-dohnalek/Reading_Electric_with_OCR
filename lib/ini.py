@@ -6,9 +6,9 @@ import os.path
 
 # CONSTANTS #################################################################
 
-MAIL = 'conf/email.ini'
-USER = 'users.ini'
-CONF = 'conf/config.ini'
+MAIL = '/home/shares/nas/smartCam/conf/email.ini'
+USER = '/home/shares/nas/smartCam/users.ini'
+CONF = '/home/shares/nas/smartCam/conf/config.ini'
 
 # FUNCTIONS #################################################################
 
@@ -95,17 +95,17 @@ def check_file_exists(_file):
         f.close()
 
 
-def clean_directory(_path):
+def clean_directory(path):
     """
 
     :param _path:  path to clean
     """
 
-    _file = os.listdir(_path)
+    _file = os.listdir(path)
 
     for i in range(0, len(_file)):
-        if os.path.exists(_path + '/' + _file[i]):
-            os.remove(_path + '/' + _file[i])
+        if os.path.exists(path + '/' + _file[i]):
+            os.remove(path + '/' + _file[i])
 
 
 def setup(path):
