@@ -25,9 +25,9 @@ import os.path
 
 # CONSTANTS #################################################################
 
-MAIL = '/home/shares/nas/smartCam/conf/email.ini'
-USER = '/home/shares/nas/smartCam/users.ini'
-CONF = '/home/shares/nas/smartCam/conf/config.ini'
+MAIL = 'email.ini'
+USER = 'users.ini'
+CONF = 'config.ini'
 
 # FUNCTIONS #################################################################
 
