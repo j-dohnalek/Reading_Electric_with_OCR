@@ -45,15 +45,15 @@ import sys
 
 # THIRD-PARTY IMPORTS #######################################################
 
-from lib import ini
-from lib import push
+import ini
+import push
 
 # CONSTANTS #################################################################
 
 # Absolute _path to the directory where the python _files are stores
 # this will help to run it in the crontabs
-PATH = '/home/shares/nas/smartCam'
-LAST = '/cache/last_reading.txt'  # Last reading
+PATH = '<INSERT PATH>'
+LAST = '/last_reading.txt'  # Last reading
 
 # FUNCTIONS #################################################################
 
@@ -111,8 +111,8 @@ def take_picture(imagename):
     Adjust the script command to your needs!
     
     Why I have not used the raspberry pi python camera module?
-    I have got issue with the result images, the images came out different using the subprocess and using the camera module.
-    Feel free to replace the code below to utilise python camera module.
+    My camera stopped working with the python library, however it worked with command line.
+    Later it stopped working at all, curretly waiting for replacement
     
     -ISO Camera ISO settings
     -ss  Shutter Speed
@@ -122,6 +122,8 @@ def take_picture(imagename):
     -w   Width of the image
     -h   Height of the image
     -o   output image name
+    
+    TODO: Use the python camera library
     """
     cmd = "/usr/bin/raspistill -ISO 1600 -ss 300000 -mm matrix -awb auto -ex night -co 80 -w 800 -h 600 -o %s" % imagename
     cmd_list = cmd.split()
